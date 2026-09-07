@@ -1,0 +1,91 @@
+# Virtual Environments
+torch_ipex_env/
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*-checkpoint.ipynb
+.virtual_documents/
+
+# Datasets & Heavy Data Files
+MachineLearningCVE/
+data/
+datasets/
+raw_data/
+processed_data/
+*.csv
+*.pcap
+*.parquet
+*.npz
+*.npy
+*.h5
+
+# Model Checkpoints, Weights & Saved Artifacts
+models/
+checkpoints/
+saved_models/
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.joblib
+*.bin
+*.safetensors
+
+# Logs, Metrics & Experiment Tracking
+logs/
+runs/
+wandb/
+tensorboard/
+*.log
+
+# IDEs & Code Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+secrets.json
