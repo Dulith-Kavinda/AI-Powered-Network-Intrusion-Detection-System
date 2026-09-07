@@ -16,6 +16,25 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Real Traffic Capture
+
+The dashboard does not generate demo flows. Start a local capture service and expose recently extracted CICFlowMeter-compatible flows at `http://127.0.0.1:8000/api/live-flows`, or set `NEXT_PUBLIC_CAPTURE_API_URL` to another URL before starting Next.js.
+
+The service returns JSON in this shape:
+
+```json
+{
+	"flows": [],
+	"batches": [],
+	"packetsPerSec": 0,
+	"bandwidthKB": 0,
+	"totalPackets": 0,
+	"status": { "running": false }
+}
+```
+
+Each item in `flows` is already scored by the Python autoencoder. The UI stays offline when the capture service is unavailable instead of displaying test data. See `capture_service/README.md` for the Npcap requirement.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

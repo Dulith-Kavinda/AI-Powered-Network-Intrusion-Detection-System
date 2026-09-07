@@ -1,36 +1,30 @@
 'use client';
 
 import React from 'react';
-import { ShieldAlert, Play, Pause, RotateCcw, Zap, Sun, Moon } from 'lucide-react';
-import { TrafficScenario } from '@/types/nids';
+import { ShieldAlert, Play, Pause, RotateCcw, Sun, Moon } from 'lucide-react';
+
+type CaptureState = 'offline' | 'connecting' | 'live';
 
 interface TopNavProps {
-  isStreaming: boolean;
-  scenario: TrafficScenario;
-  speed: number;
+  captureState: CaptureState;
   theme: 'dark' | 'light';
   onStart: () => void;
   onPause: () => void;
   onReset: () => void;
-  onAnalyzeBatch: () => void;
-  onScenarioChange: (scenario: TrafficScenario) => void;
-  onSpeedChange: (speed: number) => void;
   onToggleTheme: () => void;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
-  isStreaming,
-  scenario,
-  speed,
+  captureState,
   theme,
   onStart,
   onPause,
   onReset,
-  onAnalyzeBatch,
-  onScenarioChange,
-  onSpeedChange,
   onToggleTheme,
 }) => {
+  const isStreaming = captureState === 'live';
+  const isConnecting = captureState === 'connecting';
+
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 p-4 md:p-5 rounded-2xl bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] shadow-xl">
       {/* Brand */}
@@ -44,11 +38,11 @@ export const TopNav: React.FC<TopNavProps> = ({
               AI-NIDS Console
             </h1>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-              CASCADE AI v2.4
+              AUTOENCODER MONITOR
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)]">
-            Live Network Packet Sniffer &bull; 500-Batch Intelligence &bull; Multiclass + Anomaly Autoencoder
+            Local packet capture &bull; reconstruction-error detection &bull; benign baseline
           </p>
         </div>
       </div>
@@ -70,39 +64,11 @@ export const TopNav: React.FC<TopNavProps> = ({
                 : 'bg-amber-400'
             }`}
           />
-          {isStreaming ? 'LIVE CAPTURE ACTIVE' : 'STREAM PAUSED'}
+          {isConnecting ? 'CONNECTING TO CAPTURE' : isStreaming ? 'LIVE CAPTURE ACTIVE' : 'CAPTURE OFFLINE'}
         </div>
 
-        {/* Scenario Selector */}
-        <select
-          value={scenario}
-          onChange={(e) => onScenarioChange(e.target.value as TrafficScenario)}
-          className="bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-cyan-500 cursor-pointer"
-          title="Select Traffic Scenario"
-        >
-          <option value="mixed">🌐 Mixed Real-World Traffic</option>
-          <option value="ddos_blitz">⚡ DDoS & DoS Hulk Blitz</option>
-          <option value="recon_probe">🔍 PortScan & Recon Sweep</option>
-          <option value="web_attack">🛡️ Web Attacks (SQLi, XSS)</option>
-          <option value="zero_day_stealth">☣️ Zero-Day Stealth Anomaly</option>
-          <option value="pure_benign">✅ Normal Clean Enterprise</option>
-        </select>
-
-        {/* Speed Selector */}
-        <select
-          value={speed}
-          onChange={(e) => onSpeedChange(Number(e.target.value))}
-          className="bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] text-xs rounded-xl px-3 py-2 font-medium focus:outline-none focus:border-cyan-500 cursor-pointer"
-          title="Packet Ingestion Rate"
-        >
-          <option value={2}>Slow Rate (10 flows/s)</option>
-          <option value={5}>Normal Rate (25 flows/s)</option>
-          <option value={15}>High Speed (75 flows/s)</option>
-          <option value={35}>Ultra Turbo (175 flows/s)</option>
-        </select>
-
         {/* Stream Buttons */}
-        {!isStreaming ? (
+        {!isStreaming && !isConnecting ? (
           <button
             onClick={onStart}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/25 transition-all cursor-pointer"
@@ -124,14 +90,6 @@ export const TopNav: React.FC<TopNavProps> = ({
           title="Reset Flow Buffer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-        </button>
-
-        {/* Instant 500 Batch Trigger */}
-        <button
-          onClick={onAnalyzeBatch}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 shadow-lg shadow-rose-500/25 transition-all cursor-pointer"
-        >
-          <Zap className="w-3.5 h-3.5 fill-current" /> Analyze 500 Batch
         </button>
 
         {/* Theme Switcher */}

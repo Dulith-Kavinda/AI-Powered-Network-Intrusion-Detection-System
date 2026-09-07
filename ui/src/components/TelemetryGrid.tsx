@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Gauge, Activity, Network, AlertTriangle } from 'lucide-react';
+import { Gauge, Activity, Network, CircleAlert } from 'lucide-react';
 
 interface TelemetryGridProps {
   packetsPerSec: number;
@@ -10,7 +10,8 @@ interface TelemetryGridProps {
   activeFlows: number;
   bufferCount: number;
   batchSize: number;
-  batchRiskScore: number;
+  anomalyCount: number;
+  anomalyTotal: number;
 }
 
 export const TelemetryGrid: React.FC<TelemetryGridProps> = ({
@@ -20,21 +21,14 @@ export const TelemetryGrid: React.FC<TelemetryGridProps> = ({
   activeFlows,
   bufferCount,
   batchSize,
-  batchRiskScore,
+  anomalyCount,
+  anomalyTotal,
 }) => {
   const progressPct = Math.min(100, (bufferCount / batchSize) * 100);
+  const anomalyRate = anomalyTotal > 0 ? (anomalyCount / anomalyTotal) * 100 : 0;
   const circleRadius = 38;
   const circumference = 2 * Math.PI * circleRadius;
   const strokeDashoffset = circumference - (progressPct / 100) * circumference;
-
-  let riskBadge = { text: 'LOW RISK', color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30' };
-  if (batchRiskScore > 75) {
-    riskBadge = { text: 'CRITICAL THREAT', color: 'text-rose-400 bg-rose-500/20 border-rose-500/40 critical-glow' };
-  } else if (batchRiskScore > 50) {
-    riskBadge = { text: 'HIGH RISK', color: 'text-orange-400 bg-orange-500/15 border-orange-500/30' };
-  } else if (batchRiskScore > 25) {
-    riskBadge = { text: 'ELEVATED RISK', color: 'text-amber-400 bg-amber-500/15 border-amber-500/30' };
-  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -119,21 +113,17 @@ export const TelemetryGrid: React.FC<TelemetryGridProps> = ({
         </div>
       </div>
 
-      {/* 5. Batch Threat Index */}
+      {/* 5. Autoencoder Anomaly Rate */}
       <div className="p-4 rounded-2xl bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] shadow-md flex items-center gap-4 hover:border-rose-500/40 transition-all">
         <div className="w-12 h-12 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
-          <AlertTriangle className="w-6 h-6" />
+          <CircleAlert className="w-6 h-6" />
         </div>
         <div>
-          <div className="text-[11px] font-semibold tracking-wider uppercase text-[var(--text-secondary)]">Threat Score</div>
+          <div className="text-[11px] font-semibold tracking-wider uppercase text-[var(--text-secondary)]">Anomaly Rate</div>
           <div className="text-2xl font-extrabold font-mono text-[var(--text-primary)]">
-            {batchRiskScore}<span className="text-sm font-normal text-[var(--text-muted)]">/100</span>
+            {anomalyRate.toFixed(1)}<span className="text-sm font-normal text-[var(--text-muted)]">%</span>
           </div>
-          <div className="mt-1">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${riskBadge.color}`}>
-              {riskBadge.text}
-            </span>
-          </div>
+          <div className="text-[11px] text-[var(--text-muted)]">{anomalyCount} flagged by model</div>
         </div>
       </div>
     </div>

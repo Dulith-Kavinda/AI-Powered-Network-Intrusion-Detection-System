@@ -14,7 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "AI-NIDS | Live Network Intrusion Detection & Traffic Analyzer",
-  description: "AI-Powered Network Intrusion Detection System featuring real-time packet capture, 500-flow batch processing, and Cascade Multiclass + Anomaly Autoencoder AI pipeline.",
+  description: "AI-powered network intrusion detection using local packet capture and autoencoder reconstruction-error scoring.",
 };
 
 export default function RootLayout({
